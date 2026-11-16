@@ -158,18 +158,39 @@ function HeroMesh() {
 }
 
 /* ─── LeadModal ─────────────────────────────────────────────── */
-function LeadModal({ onClose }) {
+function LeadModal({ onClose, requestType }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const lead = { name, email, company, ts: new Date().toISOString() };
-    const existing = JSON.parse(localStorage.getItem("su_leads") || "[]");
-    localStorage.setItem("su_leads", JSON.stringify([...existing, lead]));
-    setSubmitted(true);
+    setSubmitting(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, company, requestType }),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Your request could not be sent. Please try again.");
+      }
+
+      setSubmitted(true);
+    } catch (submitError) {
+      setError(
+        submitError.message || "Unable to reach our team. Please try again shortly."
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -207,11 +228,14 @@ function LeadModal({ onClose }) {
           </div>
         ) : (
           <>
-            <p className="eyebrow">Book a Free Demo</p>
-            <h3 id="modal-title">See Solve Unsolved in action.</h3>
+            <p className="eyebrow">{requestType}</p>
+            <h3 id="modal-title">
+              {requestType === "Advisory call"
+                ? "Book a strategy call with our team."
+                : "Talk with the Solve Unsolved team."}
+            </h3>
             <p className="modal-sub">
-              Book a free 30-minute live demo. We'll walk through the platform,
-              map it to your use case, and answer every question — no commitment required.
+              Share your details and our team will follow up about your request.
             </p>
             <form onSubmit={handleSubmit} className="lead-form">
               <div className="form-row">
@@ -245,12 +269,13 @@ function LeadModal({ onClose }) {
                 onChange={(e) => setCompany(e.target.value)}
                 autoComplete="organization"
               />
-              <button type="submit" className="btn btn-primary">
-                Book a Free Demo →
+              <button type="submit" className="btn btn-primary" disabled={submitting}>
+                {submitting ? "Sending..." : "Send request →"}
               </button>
+              {error && <p className="form-error" role="alert">{error}</p>}
             </form>
             <p className="modal-privacy">
-              Your information is stored locally and never shared with third parties.
+              Your details will be sent to our team so we can respond to your request.
             </p>
           </>
         )}
@@ -262,6 +287,7 @@ function LeadModal({ onClose }) {
 /* ─── App ───────────────────────────────────────────────────── */
 function App() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [requestType, setRequestType] = useState("General inquiry");
   const [isLight, setIsLight] = useState(
     () => localStorage.getItem("su_theme") === "light"
   );
@@ -271,13 +297,18 @@ function App() {
     localStorage.setItem("su_theme", isLight ? "light" : "dark");
   }, [isLight]);
 
-  const openModal = () => setModalOpen(true);
+  const openModal = (type = "General inquiry") => {
+    setRequestType(type);
+    setModalOpen(true);
+  };
   const closeModal = () => setModalOpen(false);
 
   return (
     <div className="site-shell" id="top">
       <AnimatePresence>
-        {modalOpen && <LeadModal onClose={closeModal} />}
+        {modalOpen && (
+          <LeadModal onClose={closeModal} requestType={requestType} />
+        )}
       </AnimatePresence>
 
       <header className="topbar container">
@@ -300,7 +331,11 @@ function App() {
           >
             {isLight ? "🌙" : "☀️"}
           </button>
-          <button className="btn btn-ghost" type="button" onClick={openModal}>
+          <button
+            className="btn btn-ghost"
+            type="button"
+            onClick={() => openModal("Advisory call")}
+          >
             Book Advisory Call
           </button>
         </div>
@@ -325,10 +360,10 @@ function App() {
               what's actually moving.
             </motion.p>
             <motion.div className="hero-actions" {...fadeUp(0.22)}>
-              <button className="btn btn-primary" type="button" onClick={openModal}>
+              <button className="btn btn-primary" type="button" onClick={() => openModal("Platform demo")}>
                 Get Started Free
               </button>
-              <button className="btn btn-outline" type="button" onClick={openModal}>
+              <button className="btn btn-outline" type="button" onClick={() => openModal("Advisory call")}>
                 Book 30-min Strategy Call
               </button>
             </motion.div>
@@ -508,10 +543,10 @@ function App() {
           <p className="eyebrow">Ready To Accelerate?</p>
           <h2>Build your next-gen IT SaaS platform with less complexity.</h2>
           <div className="cta-actions">
-            <button className="btn btn-primary" type="button" onClick={openModal}>
+            <button className="btn btn-primary" type="button" onClick={() => openModal("Transformation inquiry")}>
               Start Your Transformation
             </button>
-            <button className="btn btn-outline" type="button" onClick={openModal}>
+            <button className="btn btn-outline" type="button" onClick={() => openModal("Advisory call")}>
               Book 30-min Strategy Call
             </button>
           </div>

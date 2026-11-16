@@ -441,6 +441,18 @@ html.light .modal-box {
   font-size: 1rem;
 }
 
+.lead-form .btn:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.form-error {
+  margin: 0;
+  color: #d84a4a;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
