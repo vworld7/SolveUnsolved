@@ -59,6 +59,51 @@ const services = [
   },
 ];
 
+const appScreenshots = [
+  {
+    src: "/case-study/app-splash.png",
+    alt: "Jai Jagannath welcome screen",
+    title: "A devotional welcome",
+    detail: "The app's opening screen introduces the digital experience.",
+  },
+  {
+    src: "/case-study/app-language.png",
+    alt: "Language selection screen showing English, Hindi, and Odia",
+    title: "Language selection",
+    detail: "Devotees can choose English, Hindi, or Odia during onboarding.",
+  },
+  {
+    src: "/case-study/app-auth.png",
+    alt: "Welcome screen with login, sign-up, and guest options",
+    title: "A flexible sign-in",
+    detail: "Visitors can sign in or continue as a guest.",
+  },
+  {
+    src: "/case-study/app-onboarding.png",
+    alt: "Divine Darshan onboarding screen",
+    title: "Guided onboarding",
+    detail: "An introduction to the temple's digital darshan experience.",
+  },
+  {
+    src: "/case-study/app-home.jpeg",
+    alt: "App home screen with darshan, seva, and temple updates",
+    title: "The devotee home",
+    detail: "Darshan access, seva, temple status, and updates in one place.",
+  },
+  {
+    src: "/case-study/app-live-darshan.jpeg",
+    alt: "Daily Aarti and Darshan screen with seva offerings",
+    title: "Darshan and seva",
+    detail: "Darshan content alongside ways to participate in temple services.",
+  },
+  {
+    src: "/case-study/app-temple-shop.jpeg",
+    alt: "Temple Shop screen with prasad and devotional offerings",
+    title: "Temple shop",
+    detail: "A dedicated storefront for temple offerings and prasad.",
+  },
+];
+
 const whyUs = [
   {
     icon: "◈",
@@ -162,6 +207,7 @@ function LeadModal({ onClose, requestType }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
+  const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -175,7 +221,7 @@ function LeadModal({ onClose, requestType }) {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, company, requestType }),
+        body: JSON.stringify({ name, email, company, message, requestType }),
       });
       const result = await response.json();
 
@@ -232,10 +278,14 @@ function LeadModal({ onClose, requestType }) {
             <h3 id="modal-title">
               {requestType === "Advisory call"
                 ? "Book a strategy call with our team."
+                : requestType === "App development inquiry"
+                  ? "Tell us about your app idea."
                 : "Talk with the Solve Unsolved team."}
             </h3>
             <p className="modal-sub">
-              Share your details and our team will follow up about your request.
+              {requestType === "App development inquiry"
+                ? "Share a few details and we’ll follow up to discuss your goals and the right approach."
+                : "Share your details and our team will follow up about your request."}
             </p>
             <form onSubmit={handleSubmit} className="lead-form">
               <div className="form-row">
@@ -269,8 +319,22 @@ function LeadModal({ onClose, requestType }) {
                 onChange={(e) => setCompany(e.target.value)}
                 autoComplete="organization"
               />
+              <label className="sr-only" htmlFor="lead-message">
+                Project details
+              </label>
+              <textarea
+                id="lead-message"
+                placeholder="What are you looking to build? (optional)"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                maxLength={2000}
+              />
               <button type="submit" className="btn btn-primary" disabled={submitting}>
-                {submitting ? "Sending..." : "Send request →"}
+                {submitting
+                  ? "Sending..."
+                  : requestType === "App development inquiry"
+                    ? "Send app inquiry →"
+                    : "Send request →"}
               </button>
               {error && <p className="form-error" role="alert">{error}</p>}
             </form>
@@ -318,6 +382,7 @@ function App() {
         </a>
         <nav className="nav-links" aria-label="Main navigation">
           <a href="#services">Services</a>
+          <a href="#work">Featured work</a>
           <a href="#platform">Platform</a>
           <a href="#why">Why Us</a>
           <a href="#model">Model</a>
@@ -413,7 +478,7 @@ function App() {
               >
                 <h3>{item.title}</h3>
                 <p>{item.detail}</p>
-                <button className="card-link" type="button" onClick={openModal}>
+                <button className="card-link" type="button" onClick={() => openModal()}>
                   Learn more →
                 </button>
               </motion.article>
@@ -428,24 +493,141 @@ function App() {
             <h2>SERVICES BUILT FOR MODERN DIGITAL GROWTH.</h2>
           </motion.div>
           <div className="services-grid">
-            {services.map((item, i) => (
-              <motion.article
-                key={item.title}
-                className="service-card"
-                {...fadeUp(i * 0.08)}
-                onClick={openModal}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => e.key === "Enter" && openModal()}
-              >
-                <span className="service-icon" aria-hidden="true">{item.icon}</span>
-                <h3>{item.title}</h3>
-                <p>{item.detail}</p>
-                <span className="card-link">Get started →</span>
-              </motion.article>
-            ))}
+            {services.map((item, i) => {
+              const isAppDevelopment = item.title === "App Development";
+              return (
+                <motion.article
+                  key={item.title}
+                  className="service-card"
+                  {...fadeUp(i * 0.08)}
+                  onClick={isAppDevelopment ? undefined : () => openModal()}
+                  role={isAppDevelopment ? undefined : "button"}
+                  tabIndex={isAppDevelopment ? undefined : 0}
+                  onKeyDown={
+                    isAppDevelopment
+                      ? undefined
+                      : (e) => e.key === "Enter" && openModal()
+                  }
+                >
+                  <span className="service-icon" aria-hidden="true">{item.icon}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.detail}</p>
+                  {isAppDevelopment ? (
+                    <a className="card-link" href="#work">
+                      View featured app →
+                    </a>
+                  ) : (
+                    <span className="card-link">Get started →</span>
+                  )}
+                </motion.article>
+              );
+            })}
           </div>
         </section>
+
+        {/* ── Featured delivery ── */}
+        <motion.section
+          id="work"
+          className="container section"
+          {...fadeUp(0)}
+        >
+          <div className="section-head">
+            <p className="eyebrow">Featured delivery</p>
+            <h2>A digital home for Jagannath Mandir Delhi.</h2>
+          </div>
+          <article className="case-study-card">
+            <div className="case-study-copy">
+              <p className="case-study-label">Mobile app · iOS and Android</p>
+              <h3>Jagannath Mandir Delhi</h3>
+              <p>
+                Solve Unsolved delivered the official temple app end to end.
+                The experience brings devotees closer to temple life with
+                darshan, seva and Mahaprasad bookings, donations, and updates.
+              </p>
+              <div className="case-study-actions">
+                <a
+                  className="btn btn-primary"
+                  href="https://apps.apple.com/in/app/jagannath-mandir-delhi/id6808629206"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  View on App Store
+                </a>
+                <a
+                  className="btn btn-outline"
+                  href="https://play.google.com/store/apps/details?id=com.jagannathmandir.app"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Get it on Google Play
+                </a>
+              </div>
+            </div>
+            <div className="case-study-summary">
+              <article>
+                <span>Platforms</span>
+                <strong>Android and iOS</strong>
+              </article>
+              <article>
+                <span>Devotee experience</span>
+                <strong>Darshan, updates, and devotional content</strong>
+              </article>
+              <article>
+                <span>Temple services</span>
+                <strong>Seva, Mahaprasad, and donations</strong>
+              </article>
+            </div>
+          </article>
+          <div className="case-study-experience">
+            <div className="case-study-experience-head">
+              <div>
+                <p className="eyebrow">Inside the app</p>
+                <h3>Thoughtful journeys from welcome to worship.</h3>
+              </div>
+              <p>
+                Explore the key screens across onboarding, darshan, temple
+                services, and shopping.
+              </p>
+            </div>
+            <div
+              className="case-study-shots"
+              role="region"
+              aria-label="Jagannath Mandir Delhi app screenshots"
+              tabIndex={0}
+            >
+              {appScreenshots.map((screenshot) => (
+                <figure className="case-study-shot" key={screenshot.src}>
+                  <img
+                    src={screenshot.src}
+                    alt={screenshot.alt}
+                    loading="lazy"
+                  />
+                  <figcaption>
+                    <strong>{screenshot.title}</strong>
+                    <span>{screenshot.detail}</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+          <div className="app-inquiry-cta">
+            <div>
+              <p className="eyebrow">Your app, next</p>
+              <h3>Building an app of your own?</h3>
+              <p>
+                Tell us what you’re planning. We’ll discuss your goals and the
+                right approach for Android, iOS, or both.
+              </p>
+            </div>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={() => openModal("App development inquiry")}
+            >
+              Discuss your app project →
+            </button>
+          </div>
+        </motion.section>
 
         {/* ── Why Us ── */}
         <section id="why" className="container section">

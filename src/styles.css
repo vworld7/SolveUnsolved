@@ -412,7 +412,8 @@ html.light .modal-box {
   gap: 0.75rem;
 }
 
-.lead-form input {
+.lead-form input,
+.lead-form textarea {
   width: 100%;
   padding: 0.72rem 0.9rem;
   border-radius: 0.6rem;
@@ -426,11 +427,18 @@ html.light .modal-box {
   box-sizing: border-box;
 }
 
-.lead-form input::placeholder {
+.lead-form textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.lead-form input::placeholder,
+.lead-form textarea::placeholder {
   color: var(--muted);
 }
 
-.lead-form input:focus {
+.lead-form input:focus,
+.lead-form textarea:focus {
   border-color: var(--brand);
   box-shadow: 0 0 0 3px rgba(22, 178, 157, 0.15);
 }
@@ -621,6 +629,176 @@ html.light .modal-box {
   font-weight: 700;
 }
 
+.case-study-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: 1.5rem;
+  align-items: center;
+  margin-top: 1.55rem;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 1.2rem;
+  background: var(--card-bg-alt);
+}
+
+.case-study-copy h3 {
+  margin: 0;
+  font-family: "Syne", sans-serif;
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+}
+
+.case-study-copy > p:not(.case-study-label) {
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 58ch;
+}
+
+.case-study-label {
+  margin: 0 0 0.65rem;
+  color: var(--brand);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.case-study-summary {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.case-study-summary article {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: var(--card-bg);
+}
+
+.case-study-summary span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.case-study-summary strong {
+  font-family: "Syne", sans-serif;
+  line-height: 1.4;
+}
+
+.case-study-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.case-study-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.case-study-experience {
+  margin-top: 2rem;
+}
+
+.case-study-experience-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.case-study-experience-head h3 {
+  max-width: 24ch;
+  margin: 0;
+  font-family: "Syne", sans-serif;
+  font-size: clamp(1.3rem, 2.2vw, 1.8rem);
+}
+
+.case-study-experience-head > p {
+  max-width: 42ch;
+  margin: 0 0 0.2rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.case-study-shots {
+  display: flex;
+  gap: 1.1rem;
+  overflow-x: auto;
+  min-width: 0;
+  padding: 0.2rem 0 1rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: var(--brand) transparent;
+}
+
+.case-study-shot {
+  flex: 0 0 clamp(175px, 19vw, 220px);
+  min-width: 0;
+  margin: 0;
+  scroll-snap-align: start;
+}
+
+.case-study-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.case-study-shot figcaption {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.7rem 0.15rem 0;
+}
+
+.case-study-shot figcaption strong {
+  font-family: "Syne", sans-serif;
+  font-size: 0.95rem;
+}
+
+.case-study-shot figcaption span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.app-inquiry-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding: 1.4rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--card-bg);
+}
+
+.app-inquiry-cta h3 {
+  margin: 0.45rem 0;
+  font-family: "Syne", sans-serif;
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+}
+
+.app-inquiry-cta p:not(.eyebrow) {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.app-inquiry-cta .btn {
+  flex: 0 0 auto;
+}
+
 .split-section {
   display: grid;
   grid-template-columns: 1.1fr 1fr;
@@ -778,7 +956,8 @@ html.light .modal-box {
   .offer-grid,
   .timeline,
   .split-section,
-  .why-grid {
+  .why-grid,
+  .case-study-card {
     grid-template-columns: 1fr;
   }
 
@@ -824,6 +1003,30 @@ html.light .modal-box {
 
   .btn {
     width: 100%;
+  }
+
+  .case-study-card {
+    padding: 1rem;
+  }
+
+  .case-study-experience-head {
+    align-items: start;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .app-inquiry-cta {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .case-study-shot {
+    flex-basis: min(58vw, 220px);
+  }
+
+  .case-study-actions {
+    flex-direction: column;
   }
 
   .topbar {
