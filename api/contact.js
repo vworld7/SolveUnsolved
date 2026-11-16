@@ -3,6 +3,7 @@ const allowedRequestTypes = new Set([
   "Platform demo",
   "Advisory call",
   "Transformation inquiry",
+  "App development inquiry",
 ]);
 
 export default async function handler(req, res) {
@@ -19,6 +20,7 @@ export default async function handler(req, res) {
   const name = typeof body.name === "string" ? body.name.trim() : "";
   const email = typeof body.email === "string" ? body.email.trim() : "";
   const company = typeof body.company === "string" ? body.company.trim() : "";
+  const message = typeof body.message === "string" ? body.message.trim() : "";
   const requestType =
     typeof body.requestType === "string" ? body.requestType.trim() : "";
 
@@ -29,6 +31,7 @@ export default async function handler(req, res) {
     email.length > 254 ||
     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
     company.length > 160 ||
+    message.length > 2000 ||
     !allowedRequestTypes.has(requestType)
   ) {
     return res.status(400).json({ error: "Please check your contact details and try again." });
@@ -50,6 +53,7 @@ export default async function handler(req, res) {
     `Name: ${name}`,
     `Email: ${email}`,
     `Company: ${company || "Not provided"}`,
+    `Project details: ${message || "Not provided"}`,
   ].join("\n");
 
   try {
