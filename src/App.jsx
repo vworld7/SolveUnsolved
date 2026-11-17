@@ -378,7 +378,7 @@ function App() {
       <header className="topbar container">
         <a href="#" className="brand" aria-label="Solve Unsolved Home">
           <span className="brand-mark" />
-          Solve Unsolved
+          SolveUnsolved LLP
         </a>
         <nav className="nav-links" aria-label="Main navigation">
           <a href="#services">Services</a>
